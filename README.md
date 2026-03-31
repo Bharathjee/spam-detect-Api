@@ -75,6 +75,16 @@ Run the container:
 docker run -p 5000:5000 spam-detector
 ```
 
+## GitHub Actions
+
+This repository includes a GitHub Actions workflow in `.github/workflows/ci.yml`.
+It runs on push and pull request events to `main`, installs dependencies, runs `pytest`, and builds the Docker image.
+
+## Jenkins
+
+A declarative Jenkins pipeline is provided in `Jenkinsfile`.
+It checks out the repository, installs dependencies, runs tests, and builds the Docker image.
+
 ## Heroku
 
 If you deploy to Heroku, the app will start using the `web: python app.py` command from `Procfile`.
