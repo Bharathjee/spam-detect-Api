@@ -25,6 +25,12 @@ def detect_spam(message):
     else:
         return "NOT SPAM ✅", []
 
+
+def parse_request_message(data):
+    if not isinstance(data, dict):
+        return ''
+    return str(data.get('message', '') or '')
+
 HTML_TEMPLATE = '''
 <!DOCTYPE html>
 <html>
@@ -52,7 +58,7 @@ HTML_TEMPLATE = '''
         async function checkSpam() {
             const message = document.getElementById('message').value;
             if (!message) { alert('Please enter a message!'); return; }
-            const response = await fetch('/check', {
+            const response = await fetch('/api/detect', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: message })
@@ -77,10 +83,27 @@ def home():
 
 @app.route('/check', methods=['POST'])
 def check():
-    data = request.get_json()
-    message = data.get('message', '')
+    data = request.get_json(silent=True) or {}
+    message = parse_request_message(data)
     result, keywords = detect_spam(message)
     return jsonify({'result': result, 'keywords': keywords})
+
+@app.route('/api/detect', methods=['POST'])
+def api_detect():
+    data = request.get_json(silent=True) or {}
+    message = parse_request_message(data)
+    result, keywords = detect_spam(message)
+    return jsonify({
+        'message': message,
+        'result': result,
+        'keywords': keywords,
+        'spam': result == "SPAM 🚨",
+        'suspicious': result == "SUSPICIOUS ⚠️"
+    })
+
+@app.route('/api/health', methods=['GET'])
+def api_health():
+    return jsonify({'status': 'ok', 'service': 'sms-spam-detector'})
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=False)
