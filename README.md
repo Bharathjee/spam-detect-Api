@@ -5,6 +5,7 @@ A simple Python Flask app that detects spammy SMS content using keyword matching
 ## Features
 
 - Web UI for entering an SMS message
+- Mobile-friendly UI with PWA support for installable mobile usage
 - POST `/check` endpoint that returns spam detection results as JSON
 - Spam keyword detection with three categories:
   - `SPAM 🚨`
@@ -16,7 +17,9 @@ A simple Python Flask app that detects spammy SMS content using keyword matching
 - `app.py` - Flask application and spam detection logic
 - `requirements.txt` - Python dependencies
 - `Dockerfile` - Container build instructions
+- `Jenkinsfile` - Jenkins pipeline definition
 - `Procfile` - Heroku process definition
+- `k8s/` - Kubernetes deployment and service manifests
 - `test_spam.py` - Unit tests
 
 ## Requirements
@@ -36,9 +39,15 @@ python -m pip install -r requirements.txt
 python app.py
 ```
 
-Then open:
+Then open from the same machine:
 
 - `http://127.0.0.1:5000`
+
+From a phone on the same Wi-Fi network, open:
+
+- `http://<computer-ip>:5000`
+
+Replace `<computer-ip>` with your PC's local IP address (for example, `192.168.1.100`).
 
 ## API
 
@@ -74,6 +83,16 @@ Run the container:
 ```bash
 docker run -p 5000:5000 spam-detector
 ```
+
+## Kubernetes
+
+Apply the Kubernetes manifests to a cluster:
+
+```bash
+kubectl apply -f k8s/
+```
+
+Access the service inside the cluster with the `spam-detector-service` service on port `80`.
 
 ## GitHub Actions
 

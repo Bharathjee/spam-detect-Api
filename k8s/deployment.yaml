@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spam-detector
+  labels:
+    app: spam-detector
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spam-detector
+  template:
+    metadata:
+      labels:
+        app: spam-detector
+    spec:
+      containers:
+        - name: spam-detector
+          image: spam-detector:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: FLASK_ENV
+              value: production
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
